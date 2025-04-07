@@ -1,19 +1,23 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
+// src/index.ts
 
-dotenv.config();
+import express, { Request, Response } from 'express';
+import prisma from './db';
 
 const app = express();
-const PORT = process.env.PORT || 4000;
 
-app.use(cors());
 app.use(express.json());
 
-app.get('/', (_req, res) => {
-  res.send('INTERVU backend is up 🎤');
+app.get('/', (req: Request, res: Response) => {
+  res.send('Welcome to the INTERVU API!');
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+const port = process.env.PORT || 3000;
+app.listen(port, async () => {
+  console.log(`Server is running on port: ${port}`);
+  try {
+    await prisma.$connect();
+    console.log('Connected to the database successfully!');
+  } catch (error) {
+    console.error('Error connecting to the database:', error);
+  }
 });

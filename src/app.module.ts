@@ -4,7 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { AvailabilityModule } from './availability/availability.module';
 import { User } from './users/user.entity';
+import { AvailabilitySlot } from './availability/availability-slot.entity';
 
 @Module({
   imports: [
@@ -20,12 +22,13 @@ import { User } from './users/user.entity';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        entities: [User],
+        entities: [User, AvailabilitySlot],
         synchronize: configService.get('NODE_ENV') !== 'production',
       }),
       inject: [ConfigService],
     }),
     AuthModule,
+    AvailabilityModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -32,6 +32,18 @@ export class User {
   role: UserRole;
 
   @Column({ nullable: true })
+  jobTitle: string;
+
+  @Column({ nullable: true })
+  company: string;
+
+  @Column({ type: 'text', nullable: true })
+  bio: string;
+
+  @Column({ type: 'simple-array', nullable: true })
+  expertise: string[];
+
+  @Column({ nullable: true })
   linkedInProfile?: string;
 
   @CreateDateColumn()

@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, NotFoundException, Query, UseGuards, Request } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -38,5 +39,21 @@ export class UsersController {
       throw new NotFoundException('User does not exist!');
     }
     return this.usersService.delete(id);
+  }
+
+  @Get('mentors/search')
+  async searchMentors(@Query('q') query: string) {
+    return this.usersService.searchMentors(query || '');
+  }
+
+  @Get('mentors/:id')
+  async getMentorProfile(@Param('id') id: string) {
+    return this.usersService.getMentorProfile(id);
+  }
+
+  @Put('profile')
+  @UseGuards(JwtAuthGuard)
+  async updateProfile(@Request() req, @Body() profileData: Partial<User>) {
+    return this.usersService.updateProfile(req.user.id, profileData);
   }
 }

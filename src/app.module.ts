@@ -19,11 +19,11 @@ import { Interview } from './interviews/interview.entity';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: configService.get('DB_HOST'),
+        host: 'db',
         port: configService.get('DB_PORT'),
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_DATABASE'),
+        database: 'postgres',
         entities: [User, AvailabilitySlot, Interview],
         synchronize: configService.get('NODE_ENV') !== 'production',
       }),

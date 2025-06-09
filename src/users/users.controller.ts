@@ -1,4 +1,16 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, NotFoundException, Query, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  Delete,
+  NotFoundException,
+  Query,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -13,7 +25,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<User> {
+  async findOne(@Param('id') id: string): Promise<User> {
     const user = await this.usersService.findOne(id);
     if (!user) {
       throw new NotFoundException('User does not exist!');
@@ -28,12 +40,12 @@ export class UsersController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: number, @Body() user: User): Promise<any> {
+  async update(@Param('id') id: string, @Body() user: User): Promise<any> {
     return this.usersService.update(id, user);
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: number): Promise<any> {
+  async delete(@Param('id') id: string): Promise<any> {
     const user = await this.usersService.findOne(id);
     if (!user) {
       throw new NotFoundException('User does not exist!');

@@ -44,21 +44,21 @@ export class UsersService {
     return await this.usersRepository.find();
   }
 
-  async findOne(id: number): Promise<User> {
+  async findOne(id: string): Promise<User> {
     return await this.usersRepository.findOne({ where: { id } });
   }
 
   async create(user: Partial<User>): Promise<User> {
-    const newuser = this.usersRepository.create(user);
-    return await this.usersRepository.save(newuser);
+    const newUser = this.usersRepository.create(user);
+    return await this.usersRepository.save(newUser);
   }
 
-  async update(id: number, user: Partial<User>): Promise<User> {
+  async update(id: string, user: Partial<User>): Promise<User> {
     await this.usersRepository.update(id, user);
     return this.usersRepository.findOne({ where: { id } });
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     await this.usersRepository.delete(id);
   }
 }

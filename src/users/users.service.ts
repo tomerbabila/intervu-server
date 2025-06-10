@@ -10,17 +10,21 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  async searchMentors(query: string): Promise<User[]> {
-    const searchTerm = `%${query}%`;
+  async searchMentors(query: Record<string, string>): Promise<User[]> {
+    const validFields = ['firstName', 'lastName', 'jobTitle', 'company', 'expertise'];
+    const where = validFields
+      .filter((key) => query[key])
+      .map((key) => ({ role: UserRole.MENTOR, [key]: ILike(`%${query[key]}%`) }));
 
-    return await this.usersRepository.find({
-      where: [
-        { role: UserRole.MENTOR, firstName: ILike(searchTerm) },
-        { role: UserRole.MENTOR, lastName: ILike(searchTerm) },
-        { role: UserRole.MENTOR, jobTitle: ILike(searchTerm) },
-        { role: UserRole.MENTOR, company: ILike(searchTerm) },
-        { role: UserRole.MENTOR, expertise: ILike(searchTerm) },
-      ],
+    if (where.length === 0) {
+      return this.usersRepository.find({
+        where: { role: UserRole.MENTOR },
+        select: ['id', 'firstName', 'lastName', 'jobTitle', 'company', 'bio', 'expertise', 'linkedInProfile'],
+      });
+    }
+
+    return this.usersRepository.find({
+      where,
       select: ['id', 'firstName', 'lastName', 'jobTitle', 'company', 'bio', 'expertise', 'linkedInProfile'],
     });
   }
@@ -33,11 +37,6 @@ export class UsersService {
       },
       select: ['id', 'firstName', 'lastName', 'jobTitle', 'company', 'bio', 'expertise', 'linkedInProfile'],
     });
-  }
-
-  async updateProfile(userId: string, profileData: Partial<User>): Promise<User> {
-    await this.usersRepository.update(userId, profileData);
-    return this.usersRepository.findOne({ where: { id: userId } });
   }
 
   async findAll(): Promise<User[]> {

@@ -9,6 +9,7 @@ import { InterviewsModule } from './interviews/interviews.module';
 import { User } from './users/user.entity';
 import { AvailabilitySlot } from './availability/availability-slot.entity';
 import { Interview } from './interviews/interview.entity';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { Interview } from './interviews/interview.entity';
       inject: [ConfigService],
     }),
     AuthModule,
+    UsersModule,
     AvailabilityModule,
     InterviewsModule,
   ],

@@ -26,11 +26,11 @@ export class UsersController {
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<User> {
-    const user = await this.usersService.findOne(id);
-    if (!user) {
-      throw new NotFoundException('User does not exist!');
-    } else {
+    try {
+      const user = await this.usersService.findOne(id);
       return user;
+    } catch (error) {
+      throw new NotFoundException('User does not exist!');
     }
   }
 
@@ -39,33 +39,29 @@ export class UsersController {
     return this.usersService.create(user);
   }
 
-  @Put(':id')
-  async update(@Param('id') id: string, @Body() user: User): Promise<any> {
-    return this.usersService.update(id, user);
+  @Put()
+  @UseGuards(JwtAuthGuard)
+  async updateProfile(@Request() req, @Body() profileData: Partial<User>) {
+    return this.usersService.update(req.user.id, profileData);
   }
 
-  @Delete(':id')
-  async delete(@Param('id') id: string): Promise<any> {
-    const user = await this.usersService.findOne(id);
+  @Delete()
+  @UseGuards(JwtAuthGuard)
+  async delete(@Request() req): Promise<any> {
+    const user = await this.usersService.findOne(req.user.id);
     if (!user) {
       throw new NotFoundException('User does not exist!');
     }
-    return this.usersService.delete(id);
+    return this.usersService.delete(req.user.id);
   }
 
   @Get('mentors/search')
-  async searchMentors(@Query('q') query: string) {
-    return this.usersService.searchMentors(query || '');
+  async searchMentors(@Query() query: Record<string, string>) {
+    return this.usersService.searchMentors(query);
   }
 
   @Get('mentors/:id')
   async getMentorProfile(@Param('id') id: string) {
     return this.usersService.getMentorProfile(id);
-  }
-
-  @Put('profile')
-  @UseGuards(JwtAuthGuard)
-  async updateProfile(@Request() req, @Body() profileData: Partial<User>) {
-    return this.usersService.updateProfile(req.user.id, profileData);
   }
 }
